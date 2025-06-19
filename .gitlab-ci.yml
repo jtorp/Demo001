@@ -1,12 +1,8 @@
-image: busybox
+stages:
+- build
+- test
+- deploy
 
-pages:
-  stage: deploy
-  script:
-  - echo 'Nothing to do...'
-  artifacts:
-    paths:
-    - public
-    expire_in: 1 day
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+build-job:
+stages: build
+script: docker build -t my-backend-image .
