@@ -12,7 +12,7 @@ build-job:
 test-job:
   stage: test
   script:
-    - docker run -rm jt-backend-image pytest -s -v
+    - docker run --rm jt-backend-image pytest -s -v
 
 
 deploy-job:
