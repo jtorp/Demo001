@@ -1,64 +1,83 @@
-Example plain HTML site using GitLab Pages.
+# 🚀 GitLab CI/CD Pipeline 
 
-Learn more about GitLab Pages at https://pages.gitlab.io and the official
-documentation https://docs.gitlab.com/ce/user/project/pages/.
+Basic example of a CI/CD pipeline with 3 stages, running via a custom GitLab Runner.
 
----
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+## 🏗️ Overview
 
-- [GitLab CI](#gitlab-ci)
-- [GitLab User or Group Pages](#gitlab-user-or-group-pages)
-- [Did you fork this project?](#did-you-fork-this-project)
-- [Troubleshooting](#troubleshooting)
+This project demonstrates:
+- A basic GitLab CI/CD pipeline with build, test, and deploy stages.
+- A self-hosted GitLab Runner deployed on the cheapest AWS instance possible (you're welcome).
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+## 
 
-## GitLab CI
 
-This project's static Pages are built by [GitLab CI][ci], following the steps
-defined in [`.gitlab-ci.yml`](.gitlab-ci.yml):
+## ☁️ Setting Up a Custom GitLab Runner: server to run jobs
+*GitLab’s shared runners (hosted by GitLab.com, free/default ones) don’t come with Docker-in-Docker (DinD) or privileged access by default.*
 
-```
-image: busybox
+### 💸 Step 1: Launch the AWS EC2 Instance
 
-pages:
-  stage: deploy
-  script:
-  - echo 'Nothing to do...'
-  artifacts:
-    paths:
-    - public
-    expire_in: 1 day
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+- Use an **Amazon Linux 2** or **Ubuntu (20.04 or higher)** instance.
+- Recommended type: `t3.micro` (free tier eligible).
+
+### 🔐 Step 2: SSH into Your Instance
+
+```bash
+ssh -i my-serveraccesskey.pem ec2-user@ec2-public-ip
 ```
 
-The above example expects to put all your HTML files in the `public/` directory.
+### 🐧 Step 3: Install Git & Docker (Amazon Linux / Ubuntu)
 
-## GitLab User or Group Pages
+**🧰 Installing Git**
 
-To use this project as your user/group website, you will need one additional
-step: just rename your project to `namespace.gitlab.io`, where `namespace` is
-your `username` or `groupname`. This can be done by navigating to your
-project's **Settings**.
+For  `ec2-user` package manager is `yum`:
 
-Read more about [user/group Pages][userpages] and [project Pages][projpages].
+```bash
+sudo yum install git -y
+```
+or Ubuntu
+```bash
+sudo apt-get install git -y
+```
+✅ Verify:
+```bash
+which git          # Should return: /usr/bin/git
+git --version      # Displays installed Git version
+rpm -ql git        # (Amazon Linux) Lists all installed Git files
+```
 
-## Did you fork this project?
+**🐳 Install Docker**
+```bash
+sudo yum install -y docker
+```
+Add **```bash ec2-user```** to group ⚠️ Without this step, you'll need to prefix all Docker commands with **sudo***.
 
-If you forked this project for your own use, please go to your project's
-**Settings** and remove the forking relationship, which won't be necessary
-unless you want to contribute back to the upstream project.
+```bash
+sudo usermod -a -G docker ec2-user
+```
+Reload group membership without logout:
+```bash
+newgrp docker
+```
 
-## Troubleshooting
+**🐳 Install Docker Compose**
 
-1. CSS is missing! That means that you have wrongly set up the CSS URL in your
-   HTML files. Have a look at the [index.html] for an example.
+Docker Compose isn't included by default, so pull the latest stable binary:
 
-[ci]: https://about.gitlab.com/gitlab-ci/
-[index.html]: https://gitlab.com/pages/plain-html/blob/master/public/index.html
-[userpages]: https://docs.gitlab.com/ce/user/project/pages/introduction.html#user-or-group-pages
-[projpages]: https://docs.gitlab.com/ce/user/project/pages/introduction.html#project-pages
+```bash
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" \
+  -o /usr/local/bin/docker-compose
+  ```
+Make it executable:
+```bash
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+✅ Verify:
+```bash
+id ec2-user  
+docker-compose --version
+```
+
+## Launch Gitlab Runner
+
