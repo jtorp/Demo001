@@ -3,5 +3,5 @@ services:
     image: jt-backend-image:latest
     container_name: jt-backend-container
     ports:
-      - 80:8000
+      - 8080:8000
     command: "python main.py"
