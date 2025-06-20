@@ -80,4 +80,56 @@ docker-compose --version
 ```
 
 ## Launch Gitlab Runner
+*Pipeline on shared gitlab server would fail because it's Runner:#12270859 (xS6Vzpvo) 5-green.saas-linux-small-amd64.runners-manager.gitlab.com/default* 
 
+*ERROR: Job failed: exit code 1* 
+
+
+Settings -> CICD -> Runners 
+ - Toggle off the **Enable instance runners for this project**
+ - Create Project Runner
+
+ :tick for Run untagegd jobs
+
+ ### Create Runner
+ * Operating systems ->  Linux 
+ * Spin  bob-gitlab-runner, who:
+
+  🏠 Lives on your EC2 box.
+  🔁 Resurrects himself after every reboot like a clingy necromancer.
+  🐳 Can whisper to the host’s Docker daemon and spin up containers for your GitLab CI/CD jobs.
+  📦 Stores his secrets (runner config) in /srv/gitlab-runner/config.
+
+ ```bash
+ docker run -d \
+  --name bob-gitlab-runner \                # Name the container (makes it easier to restart/kill)
+  --restart always \                          # Auto-restart if the container or EC2 instance restarts
+  -v /srv/gitlab-runner/config:/etc/gitlab-runner \   # Persist runner config on host
+  -v /var/run/docker.sock:/var/run/docker.sock \       # Give the container access to Docker on the host
+  gitlab/gitlab-runner:alpine                 # Light of carb image to use
+```
+### Register Runner - disposable container to register (one-time thing)
+ bob-gitlab-runner register with GitLab instance so he knows where to pick up work.
+Answer prompts for:
+
+* GitLab URL (where your projects live) -> https://gitlab.com
+
+* Registration token (from GitLab UI )
+
+* Enter a name for the runner (call him Bob, duh)
+* Enter an executor: docker ( Bob spins up Docker containers to run jobs)
+* Enter the default Docker image (for example, ruby:2.7): docker:dind
+
+### Change config.toml 
+```bash
+cd /srv/gitlab-runner/config/
+sudo vim config.toml
+```
+Change 
+```bash 
+volumes = ["/cache"]
+```
+to
+```bash 
+volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
+```
