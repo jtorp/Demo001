@@ -17,7 +17,7 @@ def create_app() -> FastAPI:
 
     @app.get("/", response_class=JSONResponse)
     async def root():
-        return {"msg": "Hello Wrld!"}
+        return {"msg": "Hello World!"}
 
     @app.get("/healthz", response_class=JSONResponse, tags=["Health"])
     async def health_check():
