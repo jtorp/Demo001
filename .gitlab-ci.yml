@@ -1,0 +1,22 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build-job:
+  stage: build
+  script: 
+    - docker build -t jt-backend-image .
+    - echo "Build job stage..."
+
+test-job:
+  stage: test
+  script:
+    - docker run --rm jt-backend-image pytest -s -v
+
+
+deploy-job:
+  stage: deploy
+  script:
+    - echo "Deploying with docker compose to prod like a lunatic"
+    - docker compose up -d
