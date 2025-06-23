@@ -7,7 +7,7 @@ Basic example of a CI/CD pipeline with 3 stages, running via a custom GitLab Run
 
 This project demonstrates:
 - A basic GitLab CI/CD pipeline with build, test, and deploy stages.
-- A self-hosted GitLab Runner deployed on the cheapest AWS instance possible (you're welcome).
+- A self-hosted GitLab Runner deployed on the cheapest AWS instance possible (⚠️⚠️⚠️If you stop/reboot a basic EC2 instance without an Elastic IP attached, AWS will assign a new public IP).
 
 ## 
 
@@ -92,35 +92,42 @@ Settings -> CICD -> Runners
  :tick for Run untagegd jobs
 
  ### Create Runner
- * Operating systems ->  Linux 
- * Spin  bob-gitlab-runner, who:
+ * Operating systems ➡️  Linux 
+ * Spin  bob-gitlab-runner, which :
 
   🏠 Lives on your EC2 box.
+
   🔁 Resurrects himself after every reboot like a clingy necromancer.
+
   🐳 Can whisper to the host’s Docker daemon and spin up containers for your GitLab CI/CD jobs.
+
   📦 Stores his secrets (runner config) in /srv/gitlab-runner/config.
+  
+  🥐 gitlab/gitlab-runner:alpine ➡️ Light of carb image to use
+
 
  ```bash
  docker run -d \
-  --name bob-gitlab-runner \                # Name the container (makes it easier to restart/kill)
-  --restart always \                          # Auto-restart if the container or EC2 instance restarts
-  -v /srv/gitlab-runner/config:/etc/gitlab-runner \   # Persist runner config on host
-  -v /var/run/docker.sock:/var/run/docker.sock \       # Give the container access to Docker on the host
-  gitlab/gitlab-runner:alpine                 # Light of carb image to use
+  --name bob-gitlab-runner \
+  --restart always \
+  -v /srv/gitlab-runner/config:/etc/gitlab-runner \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  gitlab/gitlab-runner:alpine
 ```
+
 ### Register Runner - disposable container to register (one-time thing)
+
 ```bash
 docker run --rm -it \
     -v /srv/gitlab-runner/config:/etc/gitlab-runner \
     gitlab/gitlab-runner:alpine register
   ```
 
- bob-gitlab-runner register with GitLab instance so he knows where to pick up work.
-Answer prompts for:
+#### Answer prompts for:
 
-* GitLab URL (where your projects live) -> https://gitlab.com
+* GitLab URL (where your projects live) ➡️ https://gitlab.com
 
-* Registration token (from GitLab UI )
+* Registration token (from GitLab UI ) ➡️ copy from 
 
 * Enter a name for the runner (call him Bob, duh)
 * Enter an executor: docker ( Bob spins up Docker containers to run jobs)
@@ -142,15 +149,15 @@ to
 volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
 ```
 
-Verify 
-  jt-backend-image:latest       "python main.py"         11 minutes ago   Up 11 minutes   0.0.0.0:80->8000/tcp, :::80->8000/tcp   jt-backend-container
+✅ Verify:
+
+Port 80 is on  LISTEN      33886/docker-proxy 
+```bash
+sudo netstat -tulnp
+```
 
 ```bash
 docker ps 
 ```
-For tcp6       0      0 :::80                   :::*                    LISTEN      33886/docker-proxy  
-
-```bash
-sudo netstat -tulnp
-```
+jt-backend-image:latest       "python main.py"   is running on **0.0.0.0:80->8000/tcp, :::80->8000/tcp   jt-backend-container**
 
