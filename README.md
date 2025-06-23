@@ -109,6 +109,12 @@ Settings -> CICD -> Runners
   gitlab/gitlab-runner:alpine                 # Light of carb image to use
 ```
 ### Register Runner - disposable container to register (one-time thing)
+```bash
+docker run --rm -it \
+    -v /srv/gitlab-runner/config:/etc/gitlab-runner \
+    gitlab/gitlab-runner:alpine register
+  ```
+  
  bob-gitlab-runner register with GitLab instance so he knows where to pick up work.
 Answer prompts for:
 
@@ -119,6 +125,8 @@ Answer prompts for:
 * Enter a name for the runner (call him Bob, duh)
 * Enter an executor: docker ( Bob spins up Docker containers to run jobs)
 * Enter the default Docker image (for example, ruby:2.7): docker:dind
+
+
 
 ### Change config.toml 
 ```bash

@@ -19,4 +19,4 @@ deploy-job:
   stage: deploy
   script:
     - echo "Deploying with docker compose to prod like a lunatic"
-    - docker compose 
+    - docker compose up -d
