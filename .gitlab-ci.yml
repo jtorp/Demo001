@@ -6,7 +6,7 @@ stages:
 build-job:
   stage: build
   script: 
-    - docker build --no-cache -t jt-backend-image .
+    - docker build -t jt-backend-image .
     - echo "Build job stage..."
 
 test-job:

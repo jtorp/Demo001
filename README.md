@@ -7,10 +7,9 @@ Basic example of a CI/CD pipeline with 3 stages, running via a custom GitLab Run
 
 This project demonstrates:
 - A basic GitLab CI/CD pipeline with build, test, and deploy stages.
-- A self-hosted GitLab Runner deployed on the cheapest AWS instance possible (⚠️⚠️⚠️If you stop/reboot a basic EC2 instance without an Elastic IP attached, AWS will assign a new public IP).
-
-## 
-
+- A self-hosted GitLab Runner deployed on the cheapest AWS instance possible 
+  * (⚠️ If *stop* a basic EC2 instance without an Elastic IP attached, AWS will assign a new public IP).
+  *  (⚠️ If *reboot*, docker will survive but must re-run pipeline).
 
 ## ☁️ Setting Up a Custom GitLab Runner: server to run jobs
 *GitLab’s shared runners (hosted by GitLab.com, free/default ones) don’t come with Docker-in-Docker (DinD) or privileged access by default.*
