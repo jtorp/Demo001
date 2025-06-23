@@ -114,7 +114,7 @@ docker run --rm -it \
     -v /srv/gitlab-runner/config:/etc/gitlab-runner \
     gitlab/gitlab-runner:alpine register
   ```
-  
+
  bob-gitlab-runner register with GitLab instance so he knows where to pick up work.
 Answer prompts for:
 
@@ -141,3 +141,16 @@ to
 ```bash 
 volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
 ```
+
+Verify 
+  jt-backend-image:latest       "python main.py"         11 minutes ago   Up 11 minutes   0.0.0.0:80->8000/tcp, :::80->8000/tcp   jt-backend-container
+
+```bash
+docker ps 
+```
+For tcp6       0      0 :::80                   :::*                    LISTEN      33886/docker-proxy  
+
+```bash
+sudo netstat -tulnp
+```
+
