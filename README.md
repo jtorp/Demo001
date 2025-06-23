@@ -79,6 +79,7 @@ docker-compose --version
 ```
 
 ## Launch Gitlab Runner
+<<<<<<< HEAD
 If ec2 instance server is terminated, the runner will need manual remove 
 **GitLab → Project Settings → CI/CD → Runners → "Remove"**
 GitLab tracks runners by registration token, not by cloud infrastructure status.
@@ -87,6 +88,18 @@ Settings → CICD → Runners
  - Toggle off the **Enable instance runners for this project**
  - Create Project Runner
  - Toggle **Run untagged jobs** 
+=======
+*Pipeline on shared gitlab server would fail because it's Runner:#12270859 (xS6Vzpvo) 5-green.saas-linux-small-amd64.runners-manager.gitlab.com/default* 
+
+*ERROR: Job failed: exit code 1* 
+
+
+Settings -> CICD -> Runners 
+ - Toggle off the **Enable instance runners for this project**
+ - Create Project Runner
+
+ :tick for Run untagegd jobs
+>>>>>>> b5d27bc2d1ed14071a0a7d1b86f0e107f5156fea
 
  ### Create Runner
  * Operating systems ➡️  Linux 
@@ -157,3 +170,7 @@ sudo netstat -tulnp
 docker ps 
 ```
 jt-backend-image:latest       "python main.py"   is running on **0.0.0.0:80->8000/tcp, :::80->8000/tcp   jt-backend-container**
+<<<<<<< HEAD
+=======
+
+>>>>>>> b5d27bc2d1ed14071a0a7d1b86f0e107f5156fea

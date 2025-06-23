@@ -1,3 +1,22 @@
+<<<<<<< HEAD
+=======
+"""from fastapi import FastAPI
+
+
+#app = FastAPI()
+
+
+/*@app.get("/")
+def root():
+    return {"msg": "Hello World!"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+"""
+
+>>>>>>> b5d27bc2d1ed14071a0a7d1b86f0e107f5156fea
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 import uvicorn
