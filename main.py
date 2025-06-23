@@ -4,7 +4,6 @@ import uvicorn
 import datetime
 
 start_time = datetime.datetime.utcnow()  # capture app start time
-
 def format_uptime(td: datetime.timedelta) -> str:
     total_seconds = int(td.total_seconds())
     hours, remainder = divmod(total_seconds, 3600)
